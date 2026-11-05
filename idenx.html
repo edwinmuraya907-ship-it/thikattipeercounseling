@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="google-site-verification" content="1ep9BWNqV7Je7pC_seu7c-nJ3TVsmb-ft8q1nSbqenU" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thika TTI Peer Counseling & Clinical Wellness Platform</title>
+    <!-- Favicon / Logo in Browser Tab -->
+    <link rel="icon" type="image/svg+xml" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/svgs/solid/heart-pulse.svg">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #e0e7ff;
+            --secondary: #06b6d4;
+            --secondary-light: #cffafe;
+            --accent: #f43f5e;
+            --accent-warm: #f59e0b;
+            --bg-main: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.95);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --shadow-subtle: 0 15px 35px -5px rgba(79, 70, 229, 0.08);
+            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.7;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        #globalParticleCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Navigation Bar - Compact on Mobile */
+        nav {
+            position: sticky; top: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.75rem 4%; z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
+        .nav-logo {
+            font-weight: 800; font-size: 1.05rem; color: var(--primary);
+            text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .nav-links { display: flex; gap: 0.5rem; list-style: none; align-items: center; }
+        .nav-links a {
+            text-decoration: none; color: var(--text-muted);
+            font-weight: 600; font-size: 0.8rem; transition: var(--transition);
+            padding: 0.4rem 0.65rem; border-radius: var(--radius-sm);
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); background: var(--primary-light); }
+
+        .hamburger { display: none; cursor: pointer; font-size: 1.25rem; color: var(--text-main); padding: 0.2rem; }
+
+        .page-view { display: none; padding: 2.5rem 4% 4rem; max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+        .page-view.active-page { display: block; animation: fadeIn 0.4s ease-in-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+            color: white; padding: 0.7rem 1.5rem;
+            text-decoration: none; border-radius: 9999px;
+            font-weight: 700; font-size: 0.88rem; border: none; cursor: pointer;
+            transition: var(--transition); box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .btn:hover { background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(79, 70, 229, 0.4); }
+        .btn-secondary { background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%); box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3); }
+        .btn-secondary:hover { background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); box-shadow: none; }
+        .btn-outline:hover { background: var(--primary-light); }
+        .btn-danger { background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); box-shadow: 0 8px 25px rgba(244, 63, 94, 0.3); }
+        .btn-warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3); }
+        .btn-sm { padding: 0.4rem 0.85rem; font-size: 0.75rem; border-radius: var(--radius-sm); }
+
+        .hero-banner {
+            position: relative;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            background: linear-gradient(-45deg, #4f46e5, #06b6d4, #ec4899, #8b5cf6, #3b82f6, #10b981);
+            background-size: 500% 500%;
+            animation: wallpaperGradient 12s ease infinite;
+            color: white;
+            padding: 7rem 5% 6rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            overflow: hidden;
+            box-shadow: inset 0 0 80px rgba(0,0,0,0.25), 0 25px 50px -12px rgba(79, 70, 229, 0.4);
+            border-radius: 0;
+        }
+
+        @keyframes wallpaperGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero-content { position: relative; z-index: 2; max-width: 900px; margin: 0 auto; }
+        .hero-banner h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.15; text-shadow: 0 4px 25px rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 1px; }
+        .hero-banner p { font-size: 1.15rem; margin: 0 auto 2rem; opacity: 0.95; text-shadow: 0 2px 12px rgba(0,0,0,0.2); }
+
+        .live-ticker {
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+            border: 1.5px solid #bbf7d0;
+            border-radius: var(--radius-md);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 25px rgba(22, 163, 74, 0.08);
+            flex-wrap: wrap;
+        }
+
+        .mood-widget {
+            background: linear-gradient(135deg, #e0e7ff 0%, #cffafe 100%);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-subtle);
+        }
+        .mood-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .mood-btn {
+            background: white;
+            border: 2px solid var(--border);
+            padding: 0.65rem 1.1rem;
+            border-radius: 9999px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+        .mood-btn:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(79,70,229,0.15); }
+        .mood-result-box {
+            margin-top: 1.2rem;
+            background: white;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border-left: 5px solid var(--primary);
+            display: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; margin-bottom: 3rem; }
+        .testimonial-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.75rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-subtle);
+            position: relative;
+        }
+        .testimonial-card::before {
+            content: '\f10d';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 1rem; right: 1.2rem;
+            font-size: 1.6rem;
+            color: var(--primary-light);
+        }
+
+        .faq-container { max-width: 800px; margin: 0 auto 3rem; display: grid; gap: 0.85rem; }
+        .faq-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1.1rem 1.4rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .faq-item:hover { border-color: var(--primary); }
+        .faq-question { font-weight: 800; display: flex; justify-content: space-between; align-items: center; font-size: 1rem; text-transform: uppercase; }
+        .faq-answer { font-size: 0.9rem; color: var(--text-muted); margin-top: 0.6rem; display: none; }
+        .faq-item.active .faq-answer { display: block; }
+
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+        .card {
+            background: var(--surface); backdrop-filter: blur(12px); border: 1px solid var(--border);
+            padding: 1.75rem; border-radius: var(--radius-md); box-shadow: var(--shadow-subtle);
+            transition: var(--transition); position: relative;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(79, 70, 229, 0.12); border-color: rgba(79, 70, 229, 0.3); }
+
+        .leaders-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+        .leader-card {
+            background: var(--surface); backdrop-filter: blur(12px); border: 1px solid var(--border);
+            padding: 1.75rem 1.25rem; border-radius: var(--radius-md); text-align: center; box-shadow: var(--shadow-subtle);
+            transition: var(--transition);
+        }
+        .leader-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(79, 70, 229, 0.15); border-color: rgba(79, 70, 229, 0.3); }
+        .leader-avatar {
+            width: 85px; height: 85px; border-radius: 50%; object-fit: cover;
+            margin: 0 auto 0.85rem; border: 3px solid var(--primary); box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
+        }
+        .counsellor-avatar {
+            width: 85px; height: 85px; border-radius: 50%; object-fit: cover;
+            margin: 0 auto 0.85rem; border: 3px solid var(--secondary); box-shadow: 0 8px 20px rgba(6, 182, 212, 0.25);
+        }
+
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+        .gallery-item {
+            height: 230px; border-radius: var(--radius-md); background-size: cover; background-position: center;
+            position: relative; overflow: hidden; box-shadow: var(--shadow-subtle); display: flex; align-items: flex-end; padding: 1.1rem;
+            color: white; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+            transition: var(--transition); cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gallery-item:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 40px rgba(79, 70, 229, 0.25); border-color: var(--secondary); }
+        .gallery-item::after {
+            content: '\f002'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            position: absolute; top: 1rem; right: 1rem; background: rgba(0, 0, 0, 0.5);
+            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; opacity: 0; transition: var(--transition);
+        }
+        .gallery-item:hover::after { opacity: 1; }
+
+        .lightbox-modal {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(16px); z-index: 5000;
+            display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 2rem;
+            opacity: 0; pointer-events: none; transition: all 0.35s ease-in-out;
+        }
+        .lightbox-modal.active { opacity: 1; pointer-events: auto; }
+        .lightbox-content-wrap { position: relative; max-width: 900px; max-height: 80vh; display: flex; flex-direction: column; align-items: center; }
+        .lightbox-modal img { max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: var(--radius-md); box-shadow: 0 25px 60px rgba(0,0,0,0.6); border: 2px solid rgba(255,255,255,0.15); }
+        .lightbox-caption { color: white; font-size: 1.1rem; font-weight: 700; margin-top: 1rem; text-align: center; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+        .lightbox-close {
+            position: absolute; top: -45px; right: 0; background: rgba(255, 255, 255, 0.15); color: white; border: none;
+            width: 38px; height: 38px; border-radius: 50%; font-size: 1.1rem; cursor: pointer; transition: var(--transition);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .lightbox-close:hover { background: var(--accent); transform: scale(1.1); }
+
+        .social-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+        .social-card {
+            background: var(--surface); border: 1px solid var(--border); padding: 1.75rem 1.25rem; border-radius: var(--radius-md);
+            text-align: center; text-decoration: none; color: var(--text-main); font-weight: 700;
+            display: flex; flex-direction: column; align-items: center; gap: 0.75rem; transition: var(--transition);
+            box-shadow: var(--shadow-subtle);
+        }
+        .social-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(79, 70, 229, 0.15); }
+
+        .crisis-bar {
+            background: linear-gradient(135deg, #fee2e2 0%, #fef3c7 100%);
+            border: 1px solid #fecaca; border-radius: var(--radius-md); padding: 1.2rem 1.5rem;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.08);
+        }
+
+        .form-group { margin-bottom: 1.1rem; text-align: left; }
+        .form-group label { display: block; font-weight: 800; margin-bottom: 0.35rem; font-size: 0.8rem; color: var(--text-main); text-transform: uppercase; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 0.75rem 0.95rem; border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm); font-family: inherit; font-size: 0.9rem; background: #ffffff;
+            transition: var(--transition);
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+        }
+
+        .slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 0.6rem; margin-top: 0.4rem; }
+        .slot-btn {
+            padding: 0.6rem; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+            background: var(--surface); font-weight: 700; font-size: 0.8rem; cursor: pointer; text-align: center;
+            transition: var(--transition); color: var(--text-main);
+        }
+        .slot-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+        .slot-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
+        .slot-btn.booked { background: #f1f5f9; color: #94a3b8; border-color: #e2e8f0; cursor: not-allowed; text-decoration: line-through; }
+
+        .toast {
+            position: fixed; bottom: 2rem; right: 2rem; background: #10b981;
+            color: white; padding: 0.9rem 1.4rem; border-radius: var(--radius-md); font-weight: 700;
+            z-index: 3000; display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem;
+            transform: translateY(100px); opacity: 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.3);
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        footer { text-align: center; padding: 3rem 1.5rem; background: #0f172a; color: #94a3b8; font-size: 0.88rem; margin-top: 4rem; position: relative; z-index: 2; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        /* MOBILE NAVIGATION COLUMN & AUTO-CLOSE BEHAVIOR */
+        @media (max-width: 768px) {
+            .hero-banner h1 { font-size: 2.1rem; }
+            nav { padding: 0.6rem 4%; }
+            .nav-logo { font-size: 0.95rem; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%; left: 0;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                padding: 1.25rem 5%;
+                border-bottom: 1px solid var(--border);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+                gap: 0.5rem;
+                text-align: left;
+            }
+            .nav-links.active { display: flex; }
+            .nav-links li { width: 100%; }
+            .nav-links a {
+                display: block;
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+                border-radius: var(--radius-sm);
+            }
+            .hamburger { display: block; font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="globalParticleCanvas"></canvas>
+
+    <nav>
+        <a href="#" onclick="showPage('home')" class="nav-logo">
+            <i class="fa-solid fa-heart-pulse" style="color: var(--primary);"></i> Thika TTI Peer Counseling
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#" onclick="showPage('home')" class="nav-item active" id="nav-home">Home</a></li>
+            <li><a href="#" onclick="showPage('about')" class="nav-item" id="nav-about">About Us</a></li>
+            <li><a href="#" onclick="showPage('counsellors')" class="nav-item" id="nav-counsellors">Counsellors</a></li>
+            <li><a href="#" onclick="showPage('booking')" class="nav-item" id="nav-booking">Book Session</a></li>
+            <li><a href="#" onclick="showPage('events')" class="nav-item" id="nav-events">Events</a></li>
+            <li><a href="#" onclick="showPage('gallery')" class="nav-item" id="nav-gallery">Gallery</a></li>
+            <li><a href="#" onclick="showPage('community')" class="nav-item" id="nav-community">Community Hubs</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></div>
+    </nav>
+
+    <div id="lightboxModal" class="lightbox-modal" onclick="closeLightbox(event)">
+        <div class="lightbox-content-wrap">
+            <button class="lightbox-close" onclick="closeLightboxDirect()"><i class="fa-solid fa-xmark"></i></button>
+            <img id="lightboxImg" src="" alt="Fullscreen View">
+            <div id="lightboxCaption" class="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <!-- 1. HOME PAGE -->
+    <div id="page-home" class="page-view active-page">
+        <div class="hero-banner">
+            <div class="hero-content">
+                <h1>SAFE, CONFIDENTIAL & EMPATHETIC STUDENT COUNSELING</h1>
+                <p>Welcome to the official counseling and peer support portal of Thika Technical Training Institute. You are never alone on your academic and personal journey.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn" onclick="showPage('booking')"><i class="fa-regular fa-calendar-check"></i> Book Confidential Session</button>
+                    <button class="btn btn-secondary" onclick="showPage('community')"><i class="fa-solid fa-users"></i> Join Our Community</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div class="live-ticker">
+                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <span style="width: 12px; height: 12px; background: #22c55e; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px #22c55e;"></span>
+                    <strong style="color: #166534; font-size: 0.95rem; text-transform: uppercase;">Live Support Status:</strong>
+                    <span style="font-size: 0.9rem; color: #15803d;">Resident Counsellors & Peer Guides Online & Ready to Help</span>
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="showPage('booking')">Book Now</button>
+            </div>
+
+            <div id="homeHotlinesContainer"></div>
+
+            <div class="mood-widget">
+                <h2 style="font-size: 1.7rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.4rem; text-transform: uppercase;"><i class="fa-solid fa-face-smile" style="color: var(--primary);"></i> How Are You Feeling Today?</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Select your current emotional state for instant supportive guidance and tips.</p>
+                
+                <div class="mood-buttons">
+                    <button class="mood-btn" onclick="checkMood('calm')"><i class="fa-solid fa-leaf" style="color: #10b981;"></i> Calm & Focused</button>
+                    <button class="mood-btn" onclick="checkMood('stressed')"><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Exam / Academic Stress</button>
+                    <button class="mood-btn" onclick="checkMood('overwhelmed')"><i class="fa-solid fa-cloud-rain" style="color: #06b6d4;"></i> Overwhelmed / Tired</button>
+                    <button class="mood-btn" onclick="checkMood('lonely')"><i class="fa-solid fa-heart" style="color: #f43f5e;"></i> Feeling Low / Need to Talk</button>
+                </div>
+
+                <div id="moodResultBox" class="mood-result-box"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h2 style="font-size: 1.7rem; font-weight: 800; text-transform: uppercase;"><i class="fa-solid fa-calendar-days" style="color: var(--primary);"></i> Upcoming Campus Events</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Join upcoming mental wellness workshops and support circles.</p>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="showPage('events')">View All Events →</button>
+            </div>
+            <div id="homeEventsContainer" class="card-grid" style="margin-bottom: 3rem;"></div>
+
+            <h2 style="font-size: 1.7rem; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;"><i class="fa-solid fa-quote-left" style="color: var(--primary);"></i> Student Success Stories</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Hear from fellow Thika TTI students who found support through our club.</p>
+
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; font-style: italic;">"Booking a session with the peer counseling team during my final semester exams gave me the tools to manage my anxiety and pass with flying colors. Truly a lifesaver!"</p>
+                    <h4 style="font-weight: 800; font-size: 0.95rem; color: var(--primary); text-transform: uppercase;">Brian K.</h4>
+                    <p style="font-size: 0.78rem; color: var(--text-muted);">Automotive Engineering, Year 3</p>
+                </div>
+                <div class="testimonial-card">
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; font-style: italic;">"The weekly mindfulness gathering and warm tea circles helped me make amazing friends and feel at home here at Thika TTI."</p>
+                    <h4 style="font-weight: 800; font-size: 0.95rem; color: var(--secondary); text-transform: uppercase;">Mercy W.</h4>
+                    <p style="font-size: 0.78rem; color: var(--text-muted);">Information Technology, Year 2</p>
+                </div>
+            </div>
+
+            <h2 style="font-size: 1.7rem; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;"><i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Why Choose Our Services?</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">We provide structured, professional, and peer-backed mental wellness guidance tailored to college life.</p>
+
+            <div class="card-grid" style="margin-bottom: 3rem;">
+                <div class="card">
+                    <i class="fa-solid fa-user-shield" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.85rem;"></i>
+                    <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;">100% Confidential</h3>
+                    <p style="font-size: 0.88rem; color: var(--text-muted);">All sessions follow strict privacy standards. Your details and disclosures are completely safe.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-laptop-medical" style="font-size: 2rem; color: var(--secondary); margin-bottom: 0.85rem;"></i>
+                    <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;">Physical & Online Sessions</h3>
+                    <p style="font-size: 0.88rem; color: var(--text-muted);">Choose between in-person meetings at the campus counseling office or private Google Meet sessions.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-clock" style="font-size: 2rem; color: var(--accent-warm); margin-bottom: 0.85rem;"></i>
+                    <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;">Real-Time Availability</h3>
+                    <p style="font-size: 0.88rem; color: var(--text-muted);">Our automated booking engine ensures zero double-bookings with instant slot synchronization.</p>
+                </div>
+            </div>
+
+            <h2 style="font-size: 1.7rem; font-weight: 800; margin-bottom: 0.4rem; text-align: center; text-transform: uppercase;"><i class="fa-solid fa-circle-question" style="color: var(--primary);"></i> Frequently Asked Questions</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.75rem; text-align: center;">Got questions about counseling? Find answers below.</p>
+
+            <div class="faq-container">
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">Are counseling sessions truly confidential? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer">Yes, absolutely. Everything discussed during your session remains private between you and your counselor, adhering strictly to professional ethics.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">How much do counseling sessions cost? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer">All sessions provided by the Thika TTI Peer Counseling Club and resident counselors are completely free for registered students.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">Can I choose between physical and online meetings? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer">Yes! When booking your appointment, you can choose either an in-person campus office visit or an online Google Meet session.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. ABOUT US PAGE -->
+    <div id="page-about" class="page-view">
+        <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.8rem; text-transform: uppercase;"><i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> About Thika TTI Counseling Center</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 1.05rem;">The Thika Technical Training Institute Peer Counseling Club & Counseling Center is dedicated to cultivating a resilient, empathetic, and mentally healthy campus environment.</p>
+
+        <div class="card-grid" style="margin-bottom: 3rem;">
+            <div class="card">
+                <i class="fa-solid fa-bullseye" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.85rem;"></i>
+                <h3 style="font-weight: 800; font-size: 1.15rem; margin-bottom: 0.4rem; text-transform: uppercase;">Our Mission</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted);">To destigmatize mental health challenges across technical education institutions by providing accessible, structured professional counseling and peer-to-peer guidance.</p>
+            </div>
+            <div class="card">
+                <i class="fa-solid fa-eye" style="font-size: 2rem; color: var(--secondary); margin-bottom: 0.85rem;"></i>
+                <h3 style="font-weight: 800; font-size: 1.15rem; margin-bottom: 0.4rem; text-transform: uppercase;">Our Vision</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted);">To be a benchmark student support platform where every individual feels valued, listened to, and empowered to achieve academic and emotional balance.</p>
+            </div>
+        </div>
+
+        <h2 style="font-size: 1.7rem; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;"><i class="fa-solid fa-user-tie" style="color: var(--primary);"></i> Club Leadership & Executive Team</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Meet the dedicated student leaders driving the Thika TTI Peer Counseling Club forward.</p>
+
+        <div id="leadersContainer" class="leaders-grid"></div>
+    </div>
+
+    <!-- 3. OUR COUNSELLORS PAGE -->
+    <div id="page-counsellors" class="page-view">
+        <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;"><i class="fa-solid fa-user-doctor" style="color: var(--primary);"></i> Meet Our Counsellors & Trained Peers</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Choose from certified resident counselors and trained senior student peer guides.</p>
+
+        <div id="counsellorsContainer" class="card-grid"></div>
+    </div>
+
+    <!-- 4. BOOK A SESSION PAGE -->
+    <div id="page-booking" class="page-view">
+        <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;"><i class="fa-regular fa-calendar-check" style="color: var(--primary);"></i> Book an Appointment</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Real-time synchronized availability calendar. Select an open slot to reserve your session.</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.75rem;">
+            <div class="card">
+                <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.6rem; text-transform: uppercase;">Step 1: Choose Counsellor & Date</h3>
+                
+                <div class="form-group">
+                    <label>Select Counsellor</label>
+                    <select id="bookingCounsellorSelect" onchange="renderClientAvailableSlots()"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Select Date</label>
+                    <input type="date" id="bookingDateInput" onchange="renderClientAvailableSlots()">
+                </div>
+
+                <div class="form-group">
+                    <label>Available Time Slots (Real-Time)</label>
+                    <div id="slotsContainer" class="slot-grid"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.6rem; text-transform: uppercase;">Step 2: Client & Session Details</h3>
+                
+                <form id="clientBookingForm">
+                    <div class="form-group">
+                        <label>Selected Time Slot</label>
+                        <input type="text" id="selectedSlotDisplay" readonly placeholder="Click a slot on the left" style="font-weight: 700; color: var(--primary);" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Counselling Specialty Required</label>
+                        <select id="bookingType" required>
+                            <option value="Academic & Exam Stress">Academic & Exam Stress</option>
+                            <option value="Personal / Mental Health">Personal / Mental Health</option>
+                            <option value="Relationships & Family">Relationships & Family</option>
+                            <option value="Career & Personal Development">Career & Personal Development</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Session Format</label>
+                        <select id="bookingFormat" required>
+                            <option value="Physical (Campus Office)">Physical Meeting (Campus Office)</option>
+                            <option value="Online (Google Meet)">Online Session (Google Meet)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Your Full Name</label>
+                        <input type="text" id="clientName" placeholder="e.g. Elizabeth Moraa" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address (For Confirmation)</label>
+                        <input type="email" id="clientEmail" placeholder="e.g. elizabeth@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone / WhatsApp Number</label>
+                        <input type="tel" id="clientPhone" placeholder="e.g. 0702290334" required>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%; justify-content: center;"><i class="fa-solid fa-paper-plane"></i> Confirm & Send to Counsellor WhatsApp</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. EVENTS PAGE -->
+    <div id="page-events" class="page-view">
+        <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;"><i class="fa-solid fa-calendar-days" style="color: var(--primary);"></i> Campus Events & Workshops</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Join upcoming mental wellness workshops, support circles, and peer activities at Thika TTI.</p>
+
+        <div id="eventsContainer" class="card-grid"></div>
+    </div>
+
+    <!-- 6. GALLERY PAGE -->
+    <div id="page-gallery" class="page-view">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h2 style="font-size: 2rem; font-weight: 800; text-transform: uppercase;"><i class="fa-solid fa-images" style="color: var(--primary);"></i> Club Gallery & Photo Highlights</h2>
+                <p style="color: var(--text-muted);">Snapshots from our recent support sessions, retreats, and wellness campaigns. Click any photo to view in fullscreen.</p>
+            </div>
+            <span style="font-size: 0.8rem; background: var(--primary-light); color: var(--primary); padding: 0.35rem 0.85rem; border-radius: 20px; font-weight: 700;">Unlimited High-Res Storage</span>
+        </div>
+
+        <div id="galleryContainer" class="gallery-grid"></div>
+    </div>
+
+    <!-- 7. COMMUNITY HUBS -->
+    <div id="page-community" class="page-view">
+        <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;"><i class="fa-solid fa-users-line" style="color: var(--primary);"></i> Connect With Our Community Hubs</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Join our official student support groups and social channels.</p>
+
+        <div class="social-grid">
+            <a href="https://chat.whatsapp.com/DxM4lPhRYJt1P79h6LalVZ" target="_blank" class="social-card" style="border-color: #25d366;">
+                <i class="fa-brands fa-whatsapp" style="font-size: 2.7rem; color: #25d366;"></i>
+                <h3 style="text-transform: uppercase; font-size: 1rem;">WhatsApp Support Hub</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Direct peer support chat community.</p>
+            </a>
+            <a href="https://www.tiktok.com/@thikattipeercounsellin?_r=1&_t=ZS-9B9F79Zt9UK" target="_blank" class="social-card" style="border-color: #000000;">
+                <i class="fa-brands fa-tiktok" style="font-size: 2.7rem; color: #000; display: block;"></i>
+                <h3 style="text-transform: uppercase; font-size: 1rem;">TikTok Account</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Watch our mental wellness tips & clips.</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- 8. ADMIN / MULTI-ROLE DASHBOARD PAGE -->
+    <div id="page-admin" class="page-view">
+        <div id="adminLoginSection" class="card" style="max-width: 420px; margin: 2.5rem auto; text-align: center;">
+            <i class="fa-solid fa-user-gear" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.85rem;"></i>
+            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem; text-transform: uppercase;">Multi-Admin Portal Login</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Select your role and enter credentials to manage your assigned sector.</p>
+
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label>Select Admin Role</label>
+                    <select id="adminRoleSelect" required>
+                        <option value="super">Super Admin (Master Control)</option>
+                        <option value="events">Events Manager</option>
+                        <option value="gallery">Gallery Manager</option>
+                        <option value="counsellors">Counsellors Manager</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="adminPassword" placeholder="Enter role password" required style="text-align: center;">
+                </div>
+                <button type="submit" class="btn" style="width: 100%; justify-content: center;"><i class="fa-solid fa-key"></i> Authenticate Role</button>
+            </form>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.85rem;">Defaults: admin123 (Super) | events123 | gallery123 | counsel123</p>
+        </div>
+
+        <div id="adminDashboardSection" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
+                <div>
+                    <h2 style="font-size: 1.8rem; font-weight: 800; text-transform: uppercase;"><i class="fa-solid fa-gauge-high" style="color: var(--primary);"></i> Admin Dashboard</h2>
+                    <p style="font-size: 0.88rem; color: var(--text-muted);">Active Role: <strong id="loggedAdminRoleName" style="color: var(--primary);">Master Super Admin</strong></p>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="logoutAdmin()"><i class="fa-solid fa-right-from-bracket"></i> Lock & Exit</button>
+            </div>
+
+            <!-- MASTER SUPER ADMIN EXCLUSIVE PANEL -->
+            <div id="panel-super" class="admin-panel card" style="display: none; margin-bottom: 2rem; border-color: var(--primary);">
+                <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.4rem; color: var(--primary); text-transform: uppercase;"><i class="fa-solid fa-shield-halved"></i> Master Super Admin Control Center</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">As Super Admin, you have absolute control over emergency hotlines, all club leaders, events, gallery, counsellors, and role passwords.</p>
+                
+                <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.75rem;">
+                    <button class="btn btn-sm" onclick="showSuperSector('hotlines')">Manage Hotlines</button>
+                    <button class="btn btn-sm btn-secondary" onclick="showSuperSector('leaders')">Manage Leaders</button>
+                    <button class="btn btn-sm btn-outline" onclick="showSuperSector('counsellors')">Manage Counsellors</button>
+                    <button class="btn btn-sm btn-warning" onclick="showSuperSector('events')">Manage Events</button>
+                    <button class="btn btn-sm btn-danger" onclick="showSuperSector('gallery')">Manage Gallery</button>
+                    <button class="btn btn-sm" style="background: #334155;" onclick="showSuperSector('passwords')">Change Passwords</button>
+                </div>
+
+                <!-- 1. HOTLINES CONTROL -->
+                <div id="superSector-hotlines" class="super-sector-box" style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1.25rem;">
+                    <h4 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 0.85rem; text-transform: uppercase; color: var(--accent);"><i class="fa-solid fa-phone-volume"></i> Control Emergency Hotline Numbers</h4>
+                    <form id="addHotlineForm" style="margin-bottom: 1.25rem;">
+                        <div class="form-group"><label>Department / Title</label><input type="text" id="newHotlineTitle" placeholder="e.g. Thika TTI Student Emergency Helpline" required></div>
+                        <div class="form-group"><label>Phone Number</label><input type="tel" id="newHotlinePhone" placeholder="e.g. +254 700 000 000" required></div>
+                        <div class="form-group"><label>Description / Subtext</label><input type="text" id="newHotlineDesc" placeholder="e.g. In emotional distress or crisis? Contact immediately." required></div>
+                        <button type="submit" class="btn btn-danger btn-sm" style="width: 100%; justify-content: center;">Add New Hotline</button>
+                    </form>
+                    <div id="adminHotlinesList" style="display: grid; gap: 0.6rem;"></div>
+                </div>
+
+                <!-- 2. LEADERS CONTROL -->
+                <div id="superSector-leaders" class="super-sector-box" style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1.25rem; display: none;">
+                    <h4 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 0.85rem; text-transform: uppercase; color: var(--primary);"><i class="fa-solid fa-users"></i> Full Control Over Club Leaders (Add / Delete)</h4>
+                    <form id="addLeaderSuperForm" style="margin-bottom: 1.25rem;">
+                        <div class="form-group"><label>Full Name</label><input type="text" id="superLeaderName" placeholder="e.g. Sarah Kim" required></div>
+                        <div class="form-group"><label>Position / Role</label><input type="text" id="superLeaderRole" placeholder="e.g. Club President" required></div>
+                        <div class="form-group"><label>Portrait Photo URL</label><input type="url" id="superLeaderPhoto" placeholder="https://image-url.com/photo.jpg" required></div>
+                        <button type="submit" class="btn btn-sm" style="width: 100%; justify-content: center;">Add Club Leader</button>
+                    </form>
+                    <div id="adminLeadersList" style="display: grid; gap: 0.6rem;"></div>
+                </div>
+
+                <!-- 3. COUNSELLORS CONTROL -->
+                <div id="superSector-counsellors" class="super-sector-box" style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1.25rem; display: none;">
+                    <h4 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 0.85rem; text-transform: uppercase; color: var(--secondary);"><i class="fa-solid fa-user-doctor"></i> Full Control Over Counsellors & Guides</h4>
+                    <form id="addCounsellorSuperForm" style="margin-bottom: 1.25rem;">
+                        <div class="form-group"><label>Name</label><input type="text" id="superCounsellorName" placeholder="e.g. Dr. Jane Doe" required></div>
+                        <div class="form-group"><label>Specialty</label><input type="text" id="superCounsellorSpecialty" placeholder="e.g. Trauma & Stress Specialist" required></div>
+                        <div class="form-group"><label>WhatsApp Phone</label><input type="tel" id="superCounsellorPhone" placeholder="e.g. 254700000000" required></div>
+                        <div class="form-group"><label>Portrait Photo URL</label><input type="url" id="superCounsellorPhoto" placeholder="https://image-url.com/counsellor.jpg" required></div>
+                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;">Add Counsellor</button>
+                    </form>
+                    <div id="adminCounsellorsList" style="display: grid; gap: 0.6rem;"></div>
+                </div>
+
+                <!-- 4. EVENTS CONTROL -->
+                <div id="superSector-events" class="super-sector-box" style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1.25rem; display: none;">
+                    <h4 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 0.85rem; text-transform: uppercase; color: var(--accent-warm);"><i class="fa-solid fa-calendar-plus"></i> Manage Campus Events</h4>
+                    <form id="addEventSuperForm" style="margin-bottom: 1.25rem;">
+                        <div class="form-group"><label>Event Title</label><input type="text" id="superEventTitle" placeholder="e.g. Wellness Workshop" required></div>
+                        <div class="form-group"><label>Date & Time</label><input type="text" id="superEventDate" placeholder="e.g. Nov 20 @ 2:00 PM" required></div>
+                        <div class="form-group"><label>Description</label><textarea id="superEventDesc" rows="2" placeholder="Brief details..." required></textarea></div>
+                        <button type="submit" class="btn btn-warning btn-sm" style="width: 100%; justify-content: center;">Publish Event</button>
+                    </form>
+                    <div id="adminEventsList" style="display: grid; gap: 0.6rem;"></div>
+                </div>
+
+                <!-- 5. GALLERY CONTROL -->
+                <div id="superSector-gallery" class="super-sector-box" style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1.25rem; display: none;">
+                    <h4 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 0.85rem; text-transform: uppercase; color: #10b981;"><i class="fa-solid fa-image"></i> Manage Gallery Photos</h4>
+                    <form id="addGallerySuperForm" style="margin-bottom: 1.25rem;">
+                        <div class="form-group"><label>Image URL</label><input type="url" id="superGalleryUrl" placeholder="https://image-url.com/photo.jpg" required></div>
+                        <div class="form-group"><label>Caption</label><input type="text" id="superGalleryCaption" placeholder="Photo caption..." required></div>
+                        <button type="submit" class="btn btn-sm" style="background: #10b981; width: 100%; justify-content: center;">Upload Photo</button>
+                    </form>
+                    <div id="adminGalleryList" style="display: grid; gap: 0.6rem;"></div>
+                </div>
+
+                <!-- 6. SUPER ADMIN PASSWORD CONTROL FOR ALL -->
+                <div id="superSector-passwords" class="super-sector-box" style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1.25rem; display: none;">
+                    <h4 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 0.85rem; text-transform: uppercase; color: var(--primary);"><i class="fa-solid fa-key"></i> Change Passwords for All Roles</h4>
+                    <form id="changeAllPasswordsForm" style="display: grid; gap: 0.85rem;">
+                        <div class="form-group"><label>Super Admin Password</label><input type="text" id="passSuper" required></div>
+                        <div class="form-group"><label>Events Manager Password</label><input type="text" id="passEvents" required></div>
+                        <div class="form-group"><label>Gallery Manager Password</label><input type="text" id="passGallery" required></div>
+                        <div class="form-group"><label>Counsellors Manager Password</label><input type="text" id="passCounsellors" required></div>
+                        <button type="submit" class="btn btn-sm" style="width: 100%; justify-content: center;">Update All Passwords</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Role 1: Events Manager Panel -->
+            <div id="panel-events" class="admin-panel card" style="display: none; margin-bottom: 2rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.85rem; color: var(--primary); text-transform: uppercase;"><i class="fa-solid fa-calendar-plus"></i> Events Manager Portal</h3>
+                <form id="addEventForm" style="margin-bottom: 1.5rem;">
+                    <div class="form-group"><label>Event Title</label><input type="text" id="newEventTitle" placeholder="e.g. Mental Resilience Workshop" required></div>
+                    <div class="form-group"><label>Date & Time</label><input type="text" id="newEventDate" placeholder="e.g. Nov 20 @ 2:00 PM" required></div>
+                    <div class="form-group"><label>Description</label><textarea id="newEventDesc" rows="2" placeholder="Brief details..." required></textarea></div>
+                    <button type="submit" class="btn" style="width: 100%; justify-content: center;">Publish Event</button>
+                </form>
+                <div id="adminEventsListSub" style="display: grid; gap: 0.75rem; margin-bottom: 1.5rem;"></div>
+
+                <!-- Individual Password Change -->
+                <div style="border-top: 1px solid var(--border); padding-top: 1.25rem;">
+                    <h4 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase; color: var(--primary);">Change My Password</h4>
+                    <form onsubmit="changeSinglePassword(event, 'events')">
+                        <div class="form-group"><label>New Password</label><input type="password" id="singlePass_events" placeholder="Enter new password" required></div>
+                        <button type="submit" class="btn btn-sm btn-outline" style="width: 100%; justify-content: center;">Update Events Password</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Role 2: Gallery Manager Panel -->
+            <div id="panel-gallery" class="admin-panel card" style="display: none; margin-bottom: 2rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.85rem; color: var(--secondary); text-transform: uppercase;"><i class="fa-solid fa-image"></i> Gallery Manager Portal</h3>
+                <form id="addGalleryForm" style="margin-bottom: 1.5rem;">
+                    <div class="form-group"><label>Image URL</label><input type="url" id="rawGalleryUrlInput" placeholder="https://image-url.com/photo.jpg" required></div>
+                    <div class="form-group"><label>Photo Caption</label><input type="text" id="newPhotoCaption" placeholder="Caption..." required></div>
+                    <button type="submit" class="btn btn-secondary" style="width: 100%; justify-content: center;">Upload Photo</button>
+                </form>
+                <div id="adminGalleryListSub" style="display: grid; gap: 0.75rem; margin-bottom: 1.5rem;"></div>
+
+                <!-- Individual Password Change -->
+                <div style="border-top: 1px solid var(--border); padding-top: 1.25rem;">
+                    <h4 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase; color: var(--secondary);">Change My Password</h4>
+                    <form onsubmit="changeSinglePassword(event, 'gallery')">
+                        <div class="form-group"><label>New Password</label><input type="password" id="singlePass_gallery" placeholder="Enter new password" required></div>
+                        <button type="submit" class="btn btn-sm btn-outline" style="width: 100%; justify-content: center; border-color: var(--secondary); color: var(--secondary);">Update Gallery Password</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Role 3: Counsellors Manager Panel -->
+            <div id="panel-counsellors" class="admin-panel card" style="display: none; margin-bottom: 2rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.85rem; color: var(--accent-warm); text-transform: uppercase;"><i class="fa-solid fa-user-doctor"></i> Counsellors Manager Portal</h3>
+                <form id="addCounsellorForm" style="margin-bottom: 1.5rem;">
+                    <div class="form-group"><label>Name</label><input type="text" id="newCounsellorName" placeholder="e.g. Dr. Jane Doe" required></div>
+                    <div class="form-group"><label>Specialty</label><input type="text" id="newCounsellorSpecialty" placeholder="e.g. Trauma Specialist" required></div>
+                    <div class="form-group"><label>WhatsApp Phone</label><input type="tel" id="newCounsellorPhone" placeholder="254700000000" required></div>
+                    <div class="form-group"><label>Portrait Photo URL</label><input type="url" id="newCounsellorPhoto" placeholder="https://image-url.com/counsellor.jpg" required></div>
+                    <button type="submit" class="btn btn-secondary" style="width: 100%; justify-content: center;">Add Counsellor</button>
+                </form>
+                <div id="adminCounsellorsListSub" style="display: grid; gap: 0.75rem; margin-bottom: 1.5rem;"></div>
+
+                <!-- Individual Password Change -->
+                <div style="border-top: 1px solid var(--border); padding-top: 1.25rem;">
+                    <h4 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.75rem; text-transform: uppercase; color: var(--accent-warm);">Change My Password</h4>
+                    <form onsubmit="changeSinglePassword(event, 'counsellors')">
+                        <div class="form-group"><label>New Password</label><input type="password" id="singlePass_counsellors" placeholder="Enter new password" required></div>
+                        <button type="submit" class="btn btn-sm btn-outline" style="width: 100%; justify-content: center; border-color: var(--accent-warm); color: var(--accent-warm);">Update Counsellors Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toastBox">
+        <i class="fa-solid fa-circle-check" style="font-size: 1.2rem;"></i>
+        <span id="toastMessage">Action completed successfully!</span>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Thika Technical Training Institute (Thika TTI) Peer Counseling Center. All rights reserved. <span onclick="showPage('admin')" style="cursor: pointer; opacity: 0.25; margin-left: 8px;" title="Admin Access"><i class="fa-solid fa-lock"></i></span></p>
+        <p style="font-size: 0.8rem; margin-top: 0.4rem; opacity: 0.7;">Empowering students through empathy, active listening, and confidential professional support.</p>
+    </footer>
+
+    <!-- SCRIPT & API ENGINE -->
+    <script>
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAkFRkpS97XHOPQD885DxktUmlLjbgUMTTbSynU9I5m2xFTbNKPeP1uEU7pdsPWxU0/exec";
+
+        const DB_KEYS = {
+            AVAILABILITY: 'thika_counsel_avail_v12',
+            PASSWORDS: 'thika_counsel_passwords_v12',
+            ADMIN_SESSION: 'thika_counsel_session_v12'
+        };
+
+        let globalDB = {
+            hotlines: [],
+            leaders: [],
+            counsellors: [],
+            events: [],
+            gallery: []
+        };
+
+        function initLocalFallbacks() {
+            if (!localStorage.getItem(DB_KEYS.PASSWORDS)) {
+                localStorage.setItem(DB_KEYS.PASSWORDS, JSON.stringify({
+                    super: 'admin123',
+                    events: 'events123',
+                    gallery: 'gallery123',
+                    counsellors: 'counsel123'
+                }));
+            }
+            if (!localStorage.getItem(DB_KEYS.AVAILABILITY)) {
+                localStorage.setItem(DB_KEYS.AVAILABILITY, JSON.stringify([
+                    { id: 'av_1', counsellor: 'Jordan Davis', date: '2026-11-05', timeSlot: '09:00 AM - 10:00 AM', isBooked: false },
+                    { id: 'av_2', counsellor: 'Jordan Davis', date: '2026-11-05', timeSlot: '10:00 AM - 11:00 AM', isBooked: false },
+                    { id: 'av_3', counsellor: 'Aisha Morales', date: '2026-11-05', timeSlot: '01:00 PM - 02:00 PM', isBooked: false }
+                ]));
+            }
+        }
+
+        async function fetchGlobalWebsiteData() {
+            try {
+                const response = await fetch(APPS_SCRIPT_URL);
+                const data = await response.json();
+                if (data && typeof data === 'object') {
+                    globalDB.hotlines = data.hotlines || [];
+                    globalDB.leaders = data.leaders || [];
+                    globalDB.counsellors = data.counsellors || [];
+                    globalDB.events = data.events || [];
+                    globalDB.gallery = data.gallery || [];
+                }
+            } catch (err) {
+                console.error("Failed to fetch from Google Sheets", err);
+            }
+            refreshAllUI();
+        }
+
+        async function sendDatabaseAction(table, action, payload) {
+            try {
+                showToast("Syncing with Google Sheet...");
+                await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ table, action, payload })
+                });
+                await fetchGlobalWebsiteData();
+                showToast("Changes saved successfully!");
+            } catch (err) {
+                console.error("Sync error:", err);
+                alert("Failed to sync with Google Sheet.");
+            }
+        }
+
+        function getDB(key) { return JSON.parse(localStorage.getItem(key)) || []; }
+        function saveDB(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+        function refreshAllUI() {
+            renderHomeHotlines();
+            renderHomeEvents();
+            renderLeadersPage();
+            renderGalleryPage();
+            renderCounsellorsPage();
+            renderBookingPage();
+            const session = getDB(DB_KEYS.ADMIN_SESSION);
+            if (session && session.loggedIn) {
+                renderAdminHotlinesList();
+                renderAdminLeadersList();
+                renderAdminCounsellorsList();
+                renderAdminEventsList();
+                renderAdminEventsListSub('adminEventsListSub');
+                renderAdminGalleryList();
+                renderAdminGalleryListSub('adminGalleryListSub');
+                renderAdminCounsellorsListSub('adminCounsellorsListSub');
+            }
+        }
+
+        // Navigation & Auto-Close Mobile Menu on Click
+        function showPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active-page'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if (targetPage) targetPage.classList.add('active-page');
+
+            const navItem = document.getElementById(`nav-${pageId}`);
+            if (navItem) navItem.classList.add('active');
+
+            if (pageId === 'booking') renderBookingPage();
+            if (pageId === 'admin') checkAdminSession();
+
+            // Auto-close mobile menu dropdown when any link is clicked
+            const navLinks = document.getElementById('navLinks');
+            if (navLinks) navLinks.classList.remove('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Particle Backdrop
+        const particleCanvas = document.getElementById('globalParticleCanvas');
+        const pCtx = particleCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeParticleCanvas() {
+            if (particleCanvas) {
+                particleCanvas.width = window.innerWidth;
+                particleCanvas.height = window.innerHeight;
+            }
+        }
+        window.addEventListener('resize', resizeParticleCanvas);
+        resizeParticleCanvas();
+
+        for (let i = 0; i < 40; i++) {
+            particles.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                radius: Math.random() * 2.2 + 1,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                alpha: Math.random() * 0.35 + 0.1,
+                color: ['#4f46e5', '#06b6d4', '#818cf8'][Math.floor(Math.random() * 3)]
+            });
+        }
+
+        function animateParticles() {
+            if (pCtx && particleCanvas) {
+                pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+                particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if (p.x < 0) p.x = particleCanvas.width;
+                    if (p.x > particleCanvas.width) p.x = 0;
+                    if (p.y < 0) p.y = particleCanvas.height;
+                    if (p.y > particleCanvas.height) p.y = 0;
+
+                    pCtx.save();
+                    pCtx.globalAlpha = p.alpha;
+                    pCtx.fillStyle = p.color;
+                    pCtx.beginPath();
+                    pCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    pCtx.fill();
+                    pCtx.restore();
+                });
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        function renderHomeHotlines() {
+            const container = document.getElementById('homeHotlinesContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            globalDB.hotlines.forEach(h => {
+                const cleanPhone = String(h.phone || '').replace(/[^0-9+]/g, '');
+                const bar = document.createElement('div');
+                bar.className = 'crisis-bar';
+                bar.innerHTML = `
+                    <div>
+                        <h4 style="color: #991b1b; font-weight: 800; text-transform: uppercase;"><i class="fa-solid fa-triangle-exclamation"></i> ${h.title}</h4>
+                        <p style="font-size: 0.85rem; color: #7f1d1d;">${h.desc}</p>
+                    </div>
+                    <a href="tel:${cleanPhone}" class="btn btn-danger btn-sm"><i class="fa-solid fa-phone"></i> Call Hotline (${h.phone})</a>
+                `;
+                container.appendChild(bar);
+            });
+        }
+
+        function checkMood(mood) {
+            const box = document.getElementById('moodResultBox');
+            box.style.display = 'block';
+            if (mood === 'calm') {
+                box.innerHTML = '<strong>Wonderful!</strong> Keep up the great energy. Remember to take short breaks and stay hydrated while studying.';
+            } else if (mood === 'stressed') {
+                box.innerHTML = '<strong>Exam or academic pressure?</strong> Take a deep breath. Try breaking your revision into 25-minute blocks (Pomodoro) and consider booking an academic stress session with our counsellors!';
+            } else if (mood === 'overwhelmed') {
+                box.innerHTML = '<strong>It is okay to pause.</strong> Step away from your books for 15 minutes, listen to calm music, or talk to a trusted peer guide today.';
+            } else if (mood === 'lonely') {
+                box.innerHTML = '<strong>You are never alone.</strong> Our peer support community on WhatsApp and our confidential counselors are here for you 24/7.';
+            }
+        }
+
+        function toggleFaq(item) { item.classList.toggle('active'); }
+
+        function renderHomeEvents() {
+            const container = document.getElementById('homeEventsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            if (globalDB.events.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted);">No upcoming events scheduled right now.</p>';
+                return;
+            }
+            globalDB.events.slice(0, 2).forEach(ev => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <span class="badge" style="background: var(--primary-light); color: var(--primary); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.72rem; font-weight: 700; display: inline-block; margin-bottom: 0.6rem;">${ev.date}</span>
+                    <h3 style="font-weight: 800; font-size: 1.1rem; margin-bottom: 0.4rem; text-transform: uppercase;">${ev.title}</h3>
+                    <p style="font-size: 0.88rem; color: var(--text-muted);">${ev.desc}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderLeadersPage() {
+            const container = document.getElementById('leadersContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            globalDB.leaders.forEach(l => {
+                const card = document.createElement('div');
+                card.className = 'leader-card';
+                card.innerHTML = `
+                    <img src="${l.photo}" alt="${l.name}" class="leader-avatar">
+                    <h3 style="font-weight: 800; font-size: 1.1rem; text-transform: uppercase;">${l.name}</h3>
+                    <p style="color: var(--primary); font-size: 0.82rem; font-weight: 700; margin-bottom: 0.25rem;">${l.role}</p>
+                    <p style="font-size: 0.78rem; color: var(--text-muted);">Thika TTI Chapter</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderCounsellorsPage() {
+            const container = document.getElementById('counsellorsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            globalDB.counsellors.forEach(c => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.textAlign = 'center';
+                card.innerHTML = `
+                    <img src="${c.photo}" alt="${c.name}" class="counsellor-avatar">
+                    <h3 style="font-weight: 800; font-size: 1.15rem; text-transform: uppercase;">${c.name}</h3>
+                    <p style="color: var(--primary); font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem;">Counsellor / Guide</p>
+                    <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">${c.specialty}</p>
+                    <button class="btn btn-sm" style="width: 100%; justify-content: center;" onclick="selectCounsellorAndBook('${c.name}')">Book Session</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderBookingPage() {
+            const select = document.getElementById('bookingCounsellorSelect');
+            if (!select) return;
+            select.innerHTML = '';
+            globalDB.counsellors.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.name;
+                opt.textContent = `${c.name} (${c.specialty})`;
+                select.appendChild(opt);
+            });
+            if (!document.getElementById('bookingDateInput').value) {
+                document.getElementById('bookingDateInput').value = '2026-11-05';
+            }
+            renderClientAvailableSlots();
+        }
+
+        let selectedTimeSlot = null;
+        function renderClientAvailableSlots() {
+            const counsellor = document.getElementById('bookingCounsellorSelect').value;
+            const date = document.getElementById('bookingDateInput').value;
+            const slotsContainer = document.getElementById('slotsContainer');
+            if (!slotsContainer) return;
+            slotsContainer.innerHTML = '';
+            selectedTimeSlot = null;
+            document.getElementById('selectedSlotDisplay').value = '';
+
+            const availability = getDB(DB_KEYS.AVAILABILITY);
+            const slots = availability.filter(a => a.counsellor === counsellor && a.date === date);
+
+            if (slots.length === 0) {
+                slotsContainer.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem;">No available slots for this date.</p>';
+                return;
+            }
+
+            slots.forEach(slot => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `slot-btn ${slot.isBooked ? 'booked' : ''}`;
+                btn.textContent = slot.timeSlot;
+                if (slot.isBooked) {
+                    btn.disabled = true;
+                } else {
+                    btn.onclick = () => {
+                        document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+                        btn.classList.add('selected');
+                        selectedTimeSlot = slot.timeSlot;
+                        document.getElementById('selectedSlotDisplay').value = `${slot.timeSlot} (${slot.date})`;
+                    };
+                }
+                slotsContainer.appendChild(btn);
+            });
+        }
+
+        function selectCounsellorAndBook(name) {
+            showPage('booking');
+            document.getElementById('bookingCounsellorSelect').value = name;
+            renderClientAvailableSlots();
+        }
+
+        document.getElementById('clientBookingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const counsellorName = document.getElementById('bookingCounsellorSelect').value;
+            const date = document.getElementById('bookingDateInput').value;
+
+            if (!selectedTimeSlot) { alert('Please select a time slot.'); return; }
+
+            const availability = getDB(DB_KEYS.AVAILABILITY);
+            const slotIndex = availability.findIndex(a => a.counsellor === counsellorName && a.date === date && a.timeSlot === selectedTimeSlot);
+
+            if (slotIndex === -1 || availability[slotIndex].isBooked) {
+                alert('Slot already booked! Please select another.');
+                renderClientAvailableSlots();
+                return;
+            }
+
+            availability[slotIndex].isBooked = true;
+            saveDB(DB_KEYS.AVAILABILITY, availability);
+
+            const counsellorObj = globalDB.counsellors.find(c => c.name === counsellorName);
+            const phone = counsellorObj ? counsellorObj.phone : '254700000000';
+
+            const clientName = document.getElementById('clientName').value;
+            const clientEmail = document.getElementById('clientEmail').value;
+            const clientPhone = document.getElementById('clientPhone').value;
+            const type = document.getElementById('bookingType').value;
+            const format = document.getElementById('bookingFormat').value;
+
+            const waMessage = `Hello ${counsellorName}, I would like to book a confidential counseling session.%0A%0A*Student Details:*%0A- Name: ${clientName}%0A- Email: ${clientEmail}%0A- Phone: ${clientPhone}%0A- Specialty: ${type}%0A- Format: ${format}%0A- Date & Slot: ${date} @ ${selectedTimeSlot}`;
+
+            showToast(`Appointment reserved! Redirecting to ${counsellorName}'s WhatsApp...`);
+            setTimeout(() => { window.open(`https://wa.me/${phone}?text=${waMessage}`, '_blank'); }, 800);
+
+            e.target.reset();
+            renderClientAvailableSlots();
+        });
+
+        function renderEventsPage() {
+            const container = document.getElementById('eventsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            globalDB.events.forEach(ev => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <span style="background: var(--primary-light); color: var(--primary); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.72rem; font-weight: 700; display: inline-block; margin-bottom: 0.6rem;">${ev.date}</span>
+                    <h3 style="font-weight: 800; font-size: 1.1rem; margin-bottom: 0.4rem; text-transform: uppercase;">${ev.title}</h3>
+                    <p style="font-size: 0.88rem; color: var(--text-muted);">${ev.desc}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderGalleryPage() {
+            const container = document.getElementById('galleryContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            globalDB.gallery.forEach(g => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.65), transparent), url('${g.url}')`;
+                item.textContent = g.caption;
+                item.onclick = () => openLightbox(g.url, g.caption);
+                container.appendChild(item);
+            });
+        }
+
+        function openLightbox(url, caption) {
+            document.getElementById('lightboxImg').src = url;
+            document.getElementById('lightboxCaption').textContent = caption;
+            document.getElementById('lightboxModal').classList.add('active');
+        }
+
+        function closeLightbox(e) {
+            if (e.target.id === 'lightboxModal') { document.getElementById('lightboxModal').classList.remove('active'); }
+        }
+        function closeLightboxDirect() { document.getElementById('lightboxModal').classList.remove('active'); }
+
+        // --- Admin Authentication & Control ---
+        document.getElementById('adminLoginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const role = document.getElementById('adminRoleSelect').value;
+            const pass = document.getElementById('adminPassword').value;
+            const passwords = getDB(DB_KEYS.PASSWORDS);
+
+            if (pass === passwords[role]) {
+                saveDB(DB_KEYS.ADMIN_SESSION, { loggedIn: true, role: role });
+                checkAdminSession();
+                showToast(`Logged in as ${role.toUpperCase()} Admin.`);
+            } else {
+                alert('Incorrect password for this role.');
+            }
+        });
+
+        function checkAdminSession() {
+            const session = getDB(DB_KEYS.ADMIN_SESSION);
+            const loginSection = document.getElementById('adminLoginSection');
+            const dashboardSection = document.getElementById('adminDashboardSection');
+            const navLinksContainer = document.getElementById('navLinks');
+
+            const existingAdminLi = document.getElementById('nav-admin-li');
+            if (existingAdminLi) existingAdminLi.remove();
+
+            document.querySelectorAll('.admin-panel').forEach(p => p.style.display = 'none');
+
+            if (session && session.loggedIn) {
+                const li = document.createElement('li');
+                li.id = 'nav-admin-li';
+                li.innerHTML = `<a href="#" onclick="showPage('admin')" class="nav-item" id="nav-admin" style="color: var(--primary); font-weight: 700; text-transform: uppercase;"><i class="fa-solid fa-gauge-high"></i> Admin Portal</a>`;
+                navLinksContainer.appendChild(li);
+
+                loginSection.style.display = 'none';
+                dashboardSection.style.display = 'block';
+
+                document.getElementById('loggedAdminRoleName').textContent = session.role.toUpperCase() + ' Manager';
+
+                if (session.role === 'super') {
+                    document.getElementById('panel-super').style.display = 'block';
+                    renderAdminHotlinesList();
+                    renderAdminLeadersList();
+                    renderAdminCounsellorsList();
+                    renderAdminEventsList();
+                    renderAdminGalleryList();
+                    loadPasswordsToForm();
+                } else {
+                    document.getElementById(`panel-${session.role}`).style.display = 'block';
+                    if (session.role === 'events') renderAdminEventsListSub('adminEventsListSub');
+                    if (session.role === 'gallery') renderAdminGalleryListSub('adminGalleryListSub');
+                    if (session.role === 'counsellors') renderAdminCounsellorsListSub('adminCounsellorsListSub');
+                }
+            } else {
+                loginSection.style.display = 'block';
+                dashboardSection.style.display = 'none';
+            }
+        }
+
+        function showSuperSector(sector) {
+            document.querySelectorAll('.super-sector-box').forEach(b => b.style.display = 'none');
+            const target = document.getElementById(`superSector-${sector}`);
+            if (target) target.style.display = 'block';
+
+            if (sector === 'hotlines') renderAdminHotlinesList();
+            if (sector === 'leaders') renderAdminLeadersList();
+            if (sector === 'counsellors') renderAdminCounsellorsList();
+            if (sector === 'events') renderAdminEventsList();
+            if (sector === 'gallery') renderAdminGalleryList();
+            if (sector === 'passwords') loadPasswordsToForm();
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem(DB_KEYS.ADMIN_SESSION);
+            checkAdminSession();
+            showToast('Admin logged out.');
+        }
+
+        // Hotlines
+        document.getElementById('addHotlineForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                id: 'h_' + Date.now(),
+                title: document.getElementById('newHotlineTitle').value,
+                phone: document.getElementById('newHotlinePhone').value,
+                desc: document.getElementById('newHotlineDesc').value
+            };
+            await sendDatabaseAction('hotlines', 'add', payload);
+            e.target.reset();
+        });
+
+        function renderAdminHotlinesList() {
+            const container = document.getElementById('adminHotlinesList');
+            if (!container) return;
+            container.innerHTML = '';
+            globalDB.hotlines.forEach(h => {
+                const item = document.createElement('div');
+                item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 0.65rem 0.95rem; border-radius: 8px; border: 1px solid var(--border); gap: 1rem; flex-wrap: wrap;';
+                item.innerHTML = `
+                    <div>
+                        <strong style="font-size: 0.9rem; color: var(--text-main); text-transform: uppercase;">${h.title}</strong>
+                        <div style="font-size: 0.8rem; color: var(--primary); font-weight: 700;">${h.phone} — ${h.desc}</div>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="deleteHotline('${h.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        async function deleteHotline(id) {
+            if (!confirm('Are you sure you want to delete this emergency hotline?')) return;
+            await sendDatabaseAction('hotlines', 'delete', { id });
+        }
+
+        // Leaders
+        document.getElementById('addLeaderSuperForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                id: 'l_' + Date.now(),
+                name: document.getElementById('superLeaderName').value,
+                role: document.getElementById('superLeaderRole').value,
+                photo: document.getElementById('superLeaderPhoto').value
+            };
+            await sendDatabaseAction('leaders', 'add', payload);
+            e.target.reset();
+        });
+
+        function renderAdminLeadersList() {
+            const container = document.getElementById('adminLeadersList');
+            if (!container) return;
+            container.innerHTML = '';
+            globalDB.leaders.forEach(l => {
+                const item = document.createElement('div');
+                item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 0.65rem 0.95rem; border-radius: 8px; border: 1px solid var(--border); gap: 1rem; flex-wrap: wrap;';
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.85rem;">
+                        <img src="${l.photo}" alt="" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
+                        <div>
+                            <strong style="font-size: 0.9rem; color: var(--text-main); text-transform: uppercase;">${l.name}</strong>
+                            <div style="font-size: 0.78rem; color: var(--primary); font-weight: 700;">${l.role}</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="deleteLeader('${l.id}', '${l.name}')"><i class="fa-solid fa-trash"></i> Delete</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        async function deleteLeader(lId, lName) {
+            if (!confirm(`Are you sure you want to remove leader ${lName}?`)) return;
+            await sendDatabaseAction('leaders', 'delete', { id: lId });
+        }
+
+        // Counsellors
+        document.getElementById('addCounsellorSuperForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                id: 'c_' + Date.now(),
+                name: document.getElementById('superCounsellorName').value,
+                specialty: document.getElementById('superCounsellorSpecialty').value,
+                phone: document.getElementById('superCounsellorPhone').value,
+                photo: document.getElementById('superCounsellorPhoto').value
+            };
+            await sendDatabaseAction('counsellors', 'add', payload);
+            e.target.reset();
+        });
+
+        document.getElementById('addCounsellorForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                id: 'c_' + Date.now(),
+                name: document.getElementById('newCounsellorName').value,
+                specialty: document.getElementById('newCounsellorSpecialty').value,
+                phone: document.getElementById('newCounsellorPhone').value,
+                photo: document.getElementById('newCounsellorPhoto').value
+            };
+            await sendDatabaseAction('counsellors', 'add', payload);
+            e.target.reset();
+        });
+
+        function renderAdminCounsellorsList() {
+            const container = document.getElementById('adminCounsellorsList');
+            if (container) renderCounsellorsListGeneric(container);
+        }
+        function renderAdminCounsellorsListSub(containerId) {
+            const container = document.getElementById(containerId);
+            if (container) renderCounsellorsListGeneric(container);
+        }
+
+        function renderCounsellorsListGeneric(container) {
+            container.innerHTML = '';
+            globalDB.counsellors.forEach(c => {
+                const item = document.createElement('div');
+                item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 0.65rem 0.95rem; border-radius: 8px; border: 1px solid var(--border); gap: 1rem; flex-wrap: wrap;';
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.85rem;">
+                        <img src="${c.photo}" alt="" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
+                        <div>
+                            <strong style="font-size: 0.9rem; color: var(--text-main); text-transform: uppercase;">${c.name}</strong>
+                            <div style="font-size: 0.78rem; color: var(--text-muted);">${c.specialty}</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="deleteCounsellor('${c.id}', '${c.name}')"><i class="fa-solid fa-trash"></i> Delete</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        async function deleteCounsellor(cId, cName) {
+            if (!confirm(`Are you sure you want to remove counsellor ${cName}?`)) return;
+            await sendDatabaseAction('counsellors', 'delete', { id: cId });
+        }
+
+        // Events
+        document.getElementById('addEventSuperForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                id: 'e_' + Date.now(),
+                title: document.getElementById('superEventTitle').value,
+                date: document.getElementById('superEventDate').value,
+                desc: document.getElementById('superEventDesc').value
+            };
+            await sendDatabaseAction('events', 'add', payload);
+            e.target.reset();
+        });
+
+        document.getElementById('addEventForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                id: 'e_' + Date.now(),
+                title: document.getElementById('newEventTitle').value,
+                date: document.getElementById('newEventDate').value,
+                desc: document.getElementById('newEventDesc').value
+            };
+            await sendDatabaseAction('events', 'add', payload);
+            e.target.reset();
+        });
+
+        function renderAdminEventsList() {
+            const container = document.getElementById('adminEventsList');
+            if (container) renderEventsListGeneric(container);
+        }
+        function renderAdminEventsListSub(containerId) {
+            const container = document.getElementById(containerId);
+            if (container) renderEventsListGeneric(container);
+        }
+
+        function renderEventsListGeneric(container) {
+            container.innerHTML = '';
+            globalDB.events.forEach(ev => {
+                const item = document.createElement('div');
+                item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 0.65rem 0.95rem; border-radius: 8px; border: 1px solid var(--border); gap: 1rem; flex-wrap: wrap;';
+                item.innerHTML = `
+                    <div>
+                        <strong style="font-size: 0.9rem; color: var(--text-main); text-transform: uppercase;">${ev.title}</strong>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);">${ev.date}</div>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="deleteEvent('${ev.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        async function deleteEvent(eventId) {
+            if (!confirm('Delete this event?')) return;
+            await sendDatabaseAction('events', 'delete', { id: eventId });
+        }
+
+        // Gallery
+        document.getElementById('addGallerySuperForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                id: 'g_' + Date.now(),
+                url: document.getElementById('superGalleryUrl').value,
+                caption: document.getElementById('superGalleryCaption').value
+            };
+            await sendDatabaseAction('gallery', 'add', payload);
+            e.target.reset();
+        });
+
+        document.getElementById('addGalleryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                id: 'g_' + Date.now(),
+                url: document.getElementById('rawGalleryUrlInput').value,
+                caption: document.getElementById('newPhotoCaption').value
+            };
+            await sendDatabaseAction('gallery', 'add', payload);
+            e.target.reset();
+        });
+
+        function renderAdminGalleryList() {
+            const container = document.getElementById('adminGalleryList');
+            if (container) renderGalleryListGeneric(container);
+        }
+        function renderAdminGalleryListSub(containerId) {
+            const container = document.getElementById(containerId);
+            if (container) renderGalleryListGeneric(container);
+        }
+
+        function renderGalleryListGeneric(container) {
+            container.innerHTML = '';
+            globalDB.gallery.forEach(g => {
+                const item = document.createElement('div');
+                item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 0.65rem 0.95rem; border-radius: 8px; border: 1px solid var(--border); gap: 1rem; flex-wrap: wrap;';
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.85rem;">
+                        <img src="${g.url}" alt="" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px;">
+                        <strong style="font-size: 0.9rem; color: var(--text-main); text-transform: uppercase;">${g.caption}</strong>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="deleteGalleryPhoto('${g.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        async function deleteGalleryPhoto(id) {
+            if (!confirm('Delete photo?')) return;
+            await sendDatabaseAction('gallery', 'delete', { id });
+        }
+
+        // Passwords Management
+        function loadPasswordsToForm() {
+            const passwords = getDB(DB_KEYS.PASSWORDS);
+            document.getElementById('passSuper').value = passwords.super || '';
+            document.getElementById('passEvents').value = passwords.events || '';
+            document.getElementById('passGallery').value = passwords.gallery || '';
+            document.getElementById('passCounsellors').value = passwords.counsellors || '';
+        }
+
+        document.getElementById('changeAllPasswordsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const passwords = {
+                super: document.getElementById('passSuper').value,
+                events: document.getElementById('passEvents').value,
+                gallery: document.getElementById('passGallery').value,
+                counsellors: document.getElementById('passCounsellors').value
+            };
+            saveDB(DB_KEYS.PASSWORDS, passwords);
+            showToast('All role passwords updated successfully!');
+        });
+
+        function changeSinglePassword(e, roleKey) {
+            e.preventDefault();
+            const newPass = document.getElementById(`singlePass_${roleKey}`).value;
+            const passwords = getDB(DB_KEYS.PASSWORDS);
+            passwords[roleKey] = newPass;
+            saveDB(DB_KEYS.PASSWORDS, passwords);
+            showToast(`${roleKey.toUpperCase()} manager password updated successfully!`);
+            document.getElementById(`singlePass_${roleKey}`).value = '';
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastBox');
+            document.getElementById('toastMessage').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3800);
+        }
+
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
+
+        // Initialize App & Fetch Live Data from Google Sheet
+        initLocalFallbacks();
+        fetchGlobalWebsiteData();
+    </script>
+</body>
+</html>
